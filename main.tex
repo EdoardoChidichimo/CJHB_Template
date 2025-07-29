@@ -1,0 +1,177 @@
+\documentclass[12pt]{article}
+\usepackage{cjhb}
+\usepackage{lipsum} % you can delete this.
+
+% Add bibliography files
+\addbibresource{references.bib} % Article references should be uploaded exactly as "references.bib"
+\loadcommentaryreferences  % Load commentary references if you have commentaries
+
+\setjournalvolume{3}  % Set the journal volume number
+\setjournalissue{2}   % Set the journal issue number
+
+\begin{document}
+
+% Define disciplines (name, RGB values)
+\definediscipline{SCIENCE \& TECHNOLOGY STUDIES}{199,21,133} % The section titles will automatically turn this colour (check below to override this)
+\definediscipline{HARRISON PRIZE}{0,0,0}
+% \definediscipline{THIRD DISCIPLINE}{0,0,158}
+
+% Optional: Set section title colour (automatically picks first discipline defined but this can override)
+% \setsectiontitlecolour{252,194,115}
+
+\setarticletitle{The Role of Digital Technology in Modern Educational Practices: A Comprehensive Review}
+\setarticleshorttitle{Digital Technology in Education}  % Set the short title for headers
+\setauthorheadingandcopyright{Thompson et al.}
+
+% Define authors using the new system
+\author*[1,2]{\orcidlink{0000-0002-1825-0097}\fnm{Emma} \sur{Thompson}}\email{e.thompson@oxford.ac.uk}
+
+\author[2]{\orcidlink{0000-0002-1234-5678}\fnm{James} \sur{Wilson}}
+
+\author[3]{\fnm{Charlotte} \sur{Brown}}
+
+% Define affiliations
+\affil[1]{\orgdiv{Department of Education}, \orgname{University of Oxford}, \country{UK}}
+\affil[2]{\orgdiv{Institute of Educational Technology}, \orgname{University College London}, \country{UK}}
+\affil[3]{\orgdiv{Department of Computer Science}, \orgname{King's College London}, \country{UK}}
+
+\setcorrespondingemail{e.thompson@oxford.ac.uk}
+
+\setarticledates{\reviewdates{January 2, 2024}{June 2, 2025}{June 10, 2025}} % {received}{revision}{accepted} you can leave the revision empty if not necessary. 
+
+\setarticlekeywords{\keywords{digital technology, educational practices, online learning, blended learning}}
+
+\setarticledoi{\doi{https://doi.org/10.60886/CAM.251}}
+
+\setarticleabstract{Despite significant advancements in digital technology integration within educational settings\footnote{Digital technology in education refers to the use of electronic devices and software to enhance teaching and learning processes.}, many educational institutions continue to face challenges in effectively implementing these technological solutions. Recognising the digital divide as a critical barrier to educational equity is an essential part of resolving this gap between technological availability and effective implementation. This review analyses empirical evidence linking digital technology to educational outcomes. Specifically, it focuses on the enhanced learning experiences and academic performance following the integration of digital tools, particularly in cases involving blended learning environments. A substantial body of research illustrates the significant influence that digital technology has on student engagement and learning outcomes \parencite{andrews2000digital, beck2011whiteboards, lopez2019impact, badour2017literacy}. Numerous approaches to digital integration have been explored \parencite{smith2020intervention, davis2021guidelines}, but a comprehensive and integrated model for technology-enhanced learning is yet to be established. This review underscores the necessity for targeted research to develop and implement effective digital strategies. Ultimately, addressing technological barriers within education could enhance learning outcomes, reduce achievement gaps, and improve overall student success \parencite{chen2022meta, rodriguez2023transformation}.}
+
+\startarticlebody
+
+\section{Introduction}
+\begin{sectiontext}
+Here is some text with a footnote\footnote{This is a test footnote in the introduction.}. Recent research has demonstrated the complex relationship between digital technology and educational outcomes \parencite{patel2023divide}. Here is how to cite with just a year, as demonstrated by Travis \parencite{2023}. \lipsum
+
+\begin{figure}
+    \caption{This is a sample caption for the first figure showing the new styling.}
+    \includegraphics[width=\linewidth]{article_upper_logo.png}
+    \figurenote{This is a sample note explaining additional details about the figure. The note can span multiple lines and will maintain proper formatting throughout.}
+    \label{fig:first}
+\end{figure}
+
+\begin{table*}[!ht]
+    \centering
+    \caption{Detailed Analysis of Digital Technology Usage Across Educational Levels}
+    {\small
+    \begin{tabular}{@{}l*{8}{c}@{}}
+        \hline
+        \multirow{2}{*}{\textbf{Technology Type}} & \multicolumn{2}{c}{\textbf{Primary School}} & \multicolumn{2}{c}{\textbf{Secondary School}} & \multicolumn{2}{c}{\textbf{Higher Education}} & \multicolumn{2}{c}{\textbf{Overall}} \\
+        \cmidrule(lr){2-3} \cmidrule(lr){4-5} \cmidrule(lr){6-7} \cmidrule(lr){8-9}
+        & Digital & Traditional & Digital & Traditional & Digital & Traditional & Digital & Traditional \\
+        \hline
+        Interactive whiteboards & 82.4 & 25.3 & 76.8 & 22.1 & 75.7 & 21.9 & 78.3 & 23.1 \\
+        Tablet usage & 68.9 & 19.2 & 64.5 & 18.7 & 63.7 & 18.8 & 65.7 & 18.9 \\
+        Online learning platforms & 85.6 & 26.4 & 81.2 & 25.1 & 80.4 & 25.3 & 82.4 & 25.6 \\
+        Virtual reality tools & 73.8 & 21.5 & 70.1 & 19.8 & 69.7 & 19.6 & 71.2 & 20.3 \\
+        Collaborative software & 77.2 & 24.6 & 74.5 & 23.2 & 73.9 & 22.8 & 75.2 & 23.5 \\
+        Mobile learning apps & 79.1 & 26.8 & 76.3 & 25.4 & 75.8 & 24.9 & 77.1 & 25.7 \\
+        \hline
+    \end{tabular}
+    }
+    \figurenote{Data stratified by educational levels: Primary School (ages 5-11), Secondary School (ages 11-18), and Higher Education (ages 18+). All values represent percentages of institutions reporting regular usage. Digital = Technology-enhanced learning, Traditional = Conventional teaching methods. Primary Schools (n=83), Secondary Schools (n=89), Higher Education (n=78).}
+    \label{tab:detailed_symptoms}
+\end{table*}
+
+\end{sectiontext}
+
+\subsection{Digital Divide in Educational Access}
+\begin{sectiontext}
+\lipsum
+
+\begin{table}[htbp]
+    \centering
+    \caption{Prevalence of Digital Technology Usage in Educational Institutions}
+    {\small
+    \begin{tabular}{@{}l@{\hspace{3pt}}c@{\hspace{3pt}}c@{\hspace{3pt}}c@{}}
+        \hline
+        \textbf{Technology} & \textbf{Digital (\%)} & \textbf{Traditional (\%)} & \textbf{p} \\
+        \hline
+        Interactive whiteboards & 78.3 & 23.1 & $<$.001 \\
+        Tablet usage & 65.7 & 18.9 & $<$.001 \\
+        Online platforms & 82.4 & 25.6 & $<$.001 \\
+        Virtual reality & 71.2 & 20.3 & $<$.001 \\
+        \hline
+    \end{tabular}
+    }
+    \figurenote{Data collected from a fictional sample of 250 digital-focused institutions and 250 traditional institutions. Digital = Technology-enhanced learning environments, Traditional = Conventional teaching methods. All measurements were taken using standardised educational assessment tools.}
+    \label{tab:shame_symptoms}
+\end{table}
+
+\lipsum
+
+\begin{figure*}[!ht]
+    \centering
+    \caption{This is a sample caption for a full-width figure demonstrating the consistent styling across different figure environments.}
+    \includegraphics[width=\linewidth]{article_upper_logo.png}
+    \figurenote{Full-width figures use the same styling as single-column figures, maintaining visual consistency throughout.}
+    \label{fig:second}
+\end{figure*}
+
+\end{sectiontext}
+
+\section{Methodology}
+\begin{sectiontext}
+\lipsum
+
+\begin{quote}
+    The integration of digital technology in educational settings has fundamentally transformed the way students learn and teachers instruct. Research conducted across multiple institutions demonstrates that technology-enhanced learning environments consistently outperform traditional methods in terms of student engagement and academic achievement. The shift towards digital platforms has created new opportunities for personalised learning experiences while simultaneously presenting challenges related to accessibility and digital literacy. (Interview 6)
+\end{quote}
+\end{sectiontext}
+
+\printnotes
+
+% ========== INTERDISCIPLINARY COMMENTARIES ==========
+\startcommentaries
+
+% First Commentary
+\commentarydiscipline{132,75,158}{PSYCHOLOGY}
+\commentarytitle{The Role of Cognitive Processing in Technology-Enhanced Learning}
+\commentaryauthor{Dr. Emily Rodriguez}
+\commentaryaffiliation{Department of Educational Psychology, University of Cambridge, UK}
+\commentaryabstract{This commentary examines the cognitive mechanisms underlying digital learning processes, highlighting the importance of metacognitive awareness in technology-enhanced educational interventions. The discussion focuses on how cognitive restructuring techniques can be integrated with existing digital learning approaches to address learning barriers more effectively.}
+
+\begin{commentarycontent}
+
+% DO NOT USE \section{}, just use subsection and subsubsection
+\subsection{Cognitive Mechanisms of Digital Learning}
+Recent research has demonstrated the importance of cognitive processing in technology-enhanced learning environments \parencite{rodriguez2023cognitive}. \lipsum[1]
+
+\subsection{Educational Implications}
+Metacognitive awareness plays a crucial role in digital learning interventions \parencite{patel2023metacognitive}. \lipsum[1]
+
+\subsection{Future Research Directions}
+\lipsum[1]
+\end{commentarycontent}
+
+% Second Commentary
+\commentarydiscipline{252,194,115}{SOCIAL ANTHROPOLOGY}
+\commentarytitle{Cultural Perspectives on Digital Technology in Education: A Cross-Cultural Analysis}
+\commentaryauthor{Prof. Michael Chen}
+\commentaryaffiliation{Department of Social Anthropology, University of Oxford, UK}
+\commentaryabstract{This commentary explores how cultural contexts shape the adoption and implementation of digital technology in educational settings. Drawing on cross-cultural research, it examines how different societies conceptualise technology-enhanced learning and its relationship to educational outcomes, offering insights for culturally sensitive digital integration approaches.}
+\begin{commentarycontent}
+\subsection{Cultural Constructions of Digital Learning}
+Cultural perspectives on educational technology vary significantly across societies \parencite{chen2022cultural}. \lipsum[1]
+
+\subsection{Cross-Cultural Digital Integration}
+Cross-cultural approaches to technology-enhanced learning have shown promising results \parencite{smith2023crosscultural}. \lipsum[1]
+
+\subsection{Implications for Global Education}
+\lipsum[1]
+\end{commentarycontent}
+
+% Print references
+% Call these commands individually as needed:
+\printarticlereferences                    % Always include article references (article references file must be called references.bib)
+\printcommentaryreferences                 % Include if you have commentaries (commentaries references [aggregated across all commentaries] file must be called commentaryreferences.bib
+
+\end{document}
