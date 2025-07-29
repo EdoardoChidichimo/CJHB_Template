@@ -20,11 +20,10 @@ This package provides a complete LaTeX environment for academic publishing with 
 latex_compiler/
 ├── cjhb.sty                    # Main style package
 ├── main.tex                    # Example article template
-├── stable_tex.tex             # Alternative template
 ├── fonts/                      # Font files
-│   ├── proforma/              # Body text fonts
-│   ├── helvetica-neue-5/      # Heading fonts
-│   └── PT_Serif/              # Discipline label fonts
+│   ├── proforma/              
+│   ├── helvetica-neue-5/      
+│   └── PT_Serif/              
 ├── images/                     # Journal assets
 │   ├── article_upper_logo.png
 │   ├── copyright.png
