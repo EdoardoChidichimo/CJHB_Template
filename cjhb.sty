@@ -49,7 +49,7 @@
 % ===================== FONT SETUP =====================
 % Body font: Proforma
 \setmainfont{Proforma}[
-  Path=./proforma/,
+  Path=./fonts/proforma/,
   Extension = .otf,
   UprightFont = *-Regular,
   BoldFont = *-Bold,
@@ -59,7 +59,7 @@
 
 % Title font: Helvetica Neue
 \newfontfamily\articletitlefont{HelveticaNeueMedium}[
-  Path=./helvetica-neue-5/,
+  Path=./fonts/helvetica-neue-5/,
   Extension = .otf,
   UprightFont = *,
   ItalicFont = HelveticaNeueMediumItalic,
@@ -69,7 +69,7 @@
 
 % Author font: Helvetica Neue Light
 \newfontfamily\authorfont{HelveticaNeueLight}[
-  Path=./helvetica-neue-5/,
+  Path=./fonts/helvetica-neue-5/,
   Extension = .otf,
   UprightFont = *,
   ItalicFont = HelveticaNeueLightItalic,
@@ -91,7 +91,7 @@
 
 % ===================== DISCIPLINE HANDLING =====================
 \newfontfamily\disciplinefont{PT Serif}[
-  Path=./PT-Serif/,
+  Path=./fonts/PT-Serif/,
   Extension = .ttf,
   UprightFont = *-Regular
 ]
@@ -292,7 +292,7 @@
     \begin{minipage}[t]{0.2\textwidth}
       \vspace{-.5em}%
       \hspace{-0.5cm}%
-      \includegraphics[width=1\linewidth]{article_upper_logo.png}
+      \includegraphics[width=1\linewidth]{images/article_upper_logo.png}
     \end{minipage}%
     \begin{minipage}[t]{0.645\textwidth}
       \raggedleft 
@@ -389,7 +389,7 @@
 % Author name components
 \newcommand{\fnm}[1]{\leavevmode\hbox{#1}}
 \newcommand{\sur}[1]{\unskip~\leavevmode\hbox{#1}}
-\newcommand{\orcidlink}[1]{\mbox{\href{https://orcid.org/#1}{\includegraphics[height=1em]{orcid.png}}\hspace{0.5em}}}
+\newcommand{\orcidlink}[1]{\mbox{\href{https://orcid.org/#1}{\includegraphics[height=1em]{images/orcid.png}}\hspace{0.5em}}}
 
 % Affiliation components
 \newcommand{\orgdiv}[1]{#1}
@@ -448,7 +448,7 @@
 \newcommand{\copyrightstatement}[1]{%
   \vspace{-.5em}
   \hbox{%
-    \includegraphics[height=1em]{copyright.png}%
+    \includegraphics[height=1em]{images/copyright.png}%
     \hspace{.3em}
     \raisebox{.6em}[0pt][0pt]{%
       \parbox[t]{\dimexpr0.8\textwidth\relax}{%
@@ -857,11 +857,11 @@
 \DeclareSourcemap{
   \maps[datatype=bibtex]{
     \map{
-      \perdatasource{references.bib}
+      \perdatasource{references/references.bib}
       \step[fieldset=keywords, fieldvalue={cjhbarticleref}, append]
     }
     \map{
-      \perdatasource{commentaryreferences.bib}
+      \perdatasource{references/commentaryreferences.bib}
       \step[fieldset=keywords, fieldvalue={cjhbcommentaryref}, append]
     }
   }
@@ -880,7 +880,7 @@
 
 % Command to load commentary references
 \newcommand{\loadcommentaryreferences}{%
-  \addbibresource{commentaryreferences.bib}%
+  \addbibresource{references/commentaryreferences.bib}%
 }
 
 % Command to print commentary references
