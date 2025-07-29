@@ -1,176 +1,896 @@
-\documentclass[12pt]{article}
-\usepackage{cjhb}
-\usepackage{lipsum} % you can delete this.
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{cjhb}[29/07/2025 Cambridge Journal of Human Behaviour Article Template]
 
-% Add bibliography files
-\addbibresource{references/references.bib} % Article references should be uploaded exactly as "references.bib"
-\loadcommentaryreferences  % Load commentary references if you have commentaries
+\RequirePackage{graphicx}
+\RequirePackage{geometry}
+\RequirePackage{xcolor}
+\RequirePackage{titlesec}
+\RequirePackage{fancyhdr}
+\RequirePackage{hyperref}
+\RequirePackage{amsthm}
+\RequirePackage{fontspec}
+\RequirePackage{ragged2e}
+\RequirePackage{setspace}
+\RequirePackage[absolute]{textpos}
+\RequirePackage{calc}
+\RequirePackage{rotating}
+\RequirePackage{microtype}
+\RequirePackage{mfirstuc}
+\RequirePackage[style=apa,backend=biber]{biblatex}
+\RequirePackage{csquotes}
+\RequirePackage{xparse}
+\RequirePackage{etoolbox}
+\RequirePackage{caption}
+\RequirePackage{subcaption}
+\RequirePackage{multirow}
+\RequirePackage{booktabs}
+\RequirePackage{multicol}
+\RequirePackage{endnotes}
 
-\setjournalvolume{3}  % Set the journal volume number
-\setjournalissue{2}   % Set the journal issue number
+% Hyphenation and line breaking settings
+\tolerance=1000
+\emergencystretch=\maxdimen
+\hyphenpenalty=50
+\exhyphenpenalty=50
+\doublehyphendemerits=10000
+\finalhyphendemerits=5000
+\lefthyphenmin=3
+\righthyphenmin=3
+\widowpenalty=10000
+\clubpenalty=10000
+\brokenpenalty=10000
 
-\begin{document}
+% ===================== VOLUME AND ISSUE SETUP =====================
+\newcommand{\journalvolume}{1}
+\newcommand{\journalissue}{1}
+\newcommand{\setjournalvolume}[1]{\renewcommand{\journalvolume}{#1}}
+\newcommand{\setjournalissue}[1]{\renewcommand{\journalissue}{#1}}
 
-% Define disciplines (name, RGB values)
-\definediscipline{SCIENCE \& TECHNOLOGY STUDIES}{199,21,133} % The section titles will automatically turn this colour (check below to override this)
-\definediscipline{HARRISON PRIZE}{0,0,0}
-% \definediscipline{SUE BENSON PRIZE}{0,0,158}
+% ===================== FONT SETUP =====================
+% Body font: Proforma
+\setmainfont{Proforma}[
+  Path=./fonts/proforma/,
+  Extension = .otf,
+  UprightFont = *-Regular,
+  BoldFont = *-Bold,
+  ItalicFont = *-Italic,
+  BoldItalicFont = *-BoldItalic
+]
 
-% Optional: Set section title colour (automatically picks first discipline defined but this can override)
-% \setsectiontitlecolour{252,194,115}
+% Title font: Helvetica Neue
+\newfontfamily\articletitlefont{HelveticaNeueMedium}[
+  Path=./fonts/helvetica-neue-5/,
+  Extension = .otf,
+  UprightFont = *,
+  ItalicFont = HelveticaNeueMediumItalic,
+  BoldFont = HelveticaNeueBold,
+  BoldItalicFont = HelveticaNeueBoldItalic
+]
 
-% Set article metadata
-\setarticletitle{The Role of Digital Technology in Modern Educational Practices: A Comprehensive Review}
-\setarticleshorttitle{Digital Technology in Education}  % Set the short title for headers
-\setauthorheadingandcopyright{Thompson et al.}
+% Author font: Helvetica Neue Light
+\newfontfamily\authorfont{HelveticaNeueLight}[
+  Path=./fonts/helvetica-neue-5/,
+  Extension = .otf,
+  UprightFont = *,
+  ItalicFont = HelveticaNeueLightItalic,
+  BoldFont = HelveticaNeueBold
+]
 
-% Define authors using the new system
-\author*[1,2]{\orcidlink{0000-0002-1825-0097}\fnm{Emma} \sur{Thompson}}\email{e.thompson@oxford.ac.uk}
+% ========== GEOMETRY ==========
+\geometry{
+  paperwidth=8.27in,
+  paperheight=11.69in,
+  top=2.5cm,
+  bottom=2cm,
+  left=1.5cm,
+  right=1.5cm,
+  marginparwidth=1cm,
+  headheight=12pt,
+  headsep=1cm
+}
 
-\author[2]{\orcidlink{0000-0002-1234-5678}\fnm{James} \sur{Wilson}}
+% ===================== DISCIPLINE HANDLING =====================
+\newfontfamily\disciplinefont{PT Serif}[
+  Path=./fonts/PT-Serif/,
+  Extension = .ttf,
+  UprightFont = *-Regular
+]
 
-\author[3]{\fnm{Charlotte} \sur{Brown}}
+\newcommand{\disciplinecolor}{black}
+\newcommand{\disciplinetext}{}
+\newcommand{\cjhb@disciplinelist}{}
 
-% Define affiliations
-\affil[1]{\orgdiv{Department of Education}, \orgname{University of Oxford}, \country{UK}}
-\affil[2]{\orgdiv{Institute of Educational Technology}, \orgname{University College London}, \country{UK}}
-\affil[3]{\orgdiv{Department of Computer Science}, \orgname{King's College London}, \country{UK}}
+% Storage for user-defined disciplines
+\newcounter{cjhbdisciplinecount}
 
-\setcorrespondingemail{e.thompson@oxford.ac.uk}
+% Helper macro to build up the discipline text
+\newcommand{\cjhb@disciplinetextbuilder}{}
 
-\setarticledates{\reviewdates{January 2, 2024}{June 2, 2025}{June 2, 2025}} % {received}{revision}{accepted} you can leave the revision empty if not necessary. 
+\newcommand{\cjhb@disciplineitem}[2]{%
+  \ifx\cjhb@disciplinetextbuilder\@empty
+    \gdef\cjhb@disciplinetextbuilder{{\disciplinefont\addfontfeature{LetterSpace=27}\fontsize{14}{22}\selectfont\textcolor{#1}{#2}}}%
+    \renewcommand{\disciplinecolor}{#1}%
+  \else
+    \g@addto@macro\cjhb@disciplinetextbuilder{\\[.7em]{\disciplinefont\addfontfeature{LetterSpace=27}\fontsize{14}{22}\selectfont\textcolor{#1}{#2}}}%
+  \fi
+}
 
-\setarticlekeywords{\keywords{digital technology, educational practices, online learning, blended learning}}
-\setarticledoi{\doi{https://doi.org/10.60886/CAM.251}}
-\setarticleabstract{Despite significant advancements in digital technology integration within educational settings\footnote{Digital technology in education refers to the use of electronic devices and software to enhance teaching and learning processes.}, many educational institutions continue to face challenges in effectively implementing these technological solutions. Recognising the digital divide as a critical barrier to educational equity is an essential part of resolving this gap between technological availability and effective implementation. This review analyses empirical evidence linking digital technology to educational outcomes. Specifically, it focuses on the enhanced learning experiences and academic performance following the integration of digital tools, particularly in cases involving blended learning environments. A substantial body of research illustrates the significant influence that digital technology has on student engagement and learning outcomes \parencite{andrews2000digital, beck2011whiteboards, lopez2019impact, badour2017literacy}. Numerous approaches to digital integration have been explored \parencite{smith2020intervention, davis2021guidelines}, but a comprehensive and integrated model for technology-enhanced learning is yet to be established. This review underscores the necessity for targeted research to develop and implement effective digital strategies. Ultimately, addressing technological barriers within education could enhance learning outcomes, reduce achievement gaps, and improve overall student success \parencite{chen2022meta, rodriguez2023transformation}.}
+% User command to define a custom discipline
+\newcommand{\definediscipline}[2]{%
+  % #1 = discipline name (e.g., "PSYCHOLOGY")
+  % #2 = RGB values as "r,g,b" (e.g., "132,75,158")
+  \stepcounter{cjhbdisciplinecount}
+  \expandafter\definecolor{cjhbdisc\thecjhbdisciplinecount}{RGB}{#2}
+  % Store the discipline name for later retrieval
+  \expandafter\gdef\csname cjhb@discname\thecjhbdisciplinecount\endcsname{#1}
+  % Set the discipline color for sections to the first discipline defined
+  \ifnum\value{cjhbdisciplinecount}=1
+    \definecolor{sectioncolor}{RGB}{#2}%
+    \renewcommand{\disciplinecolor}{sectioncolor}%
+  \fi
+}
 
-\startarticlebody
+% Command to set section title colour (overrides automatic first discipline colour)
+\newcommand{\setsectiontitlecolour}[1]{%
+  \definecolor{sectioncolor}{RGB}{#1}
+  \renewcommand{\disciplinecolor}{sectioncolor}%
+}
 
-\section{Introduction}
-\begin{sectiontext}
-Here is some text with a footnote\footnote{This is a test footnote in the introduction.}. Recent research has demonstrated the complex relationship between digital technology and educational outcomes \parencite{patel2023divide}. Here is how to cite with just a year, as demonstrated by Travis \parencite{2023}. \lipsum
+% Build banner text
+\newcommand{\cjhb@buildbanner}{%
+  \gdef\disciplinetext{\cjhb@drawbannertext}%
+}
 
-\begin{figure}
-    \caption{This is a sample caption for the first figure showing the new styling.}
-    \includegraphics[width=\linewidth]{images/article_upper_logo.png}
-    \figurenote{This is a sample note explaining additional details about the figure. The note can span multiple lines and will maintain proper formatting throughout.}
-    \label{fig:first}
-\end{figure}
+% Macro to draw all discipline names with their colors for banner text
+\newcommand{\cjhb@drawbannertext}{%
+  \newcount\tempcount
+  \tempcount=1
+  \loop
+    \ifnum\tempcount>\value{cjhbdisciplinecount}
+    \else
+      \ifnum\tempcount>1\\[.7em]\fi
+      {\disciplinefont\addfontfeature{LetterSpace=27}\fontsize{14}{22}\selectfont\expandafter\color{cjhbdisc\the\tempcount}\cjhb@getdisciplinename{\the\tempcount}}%
+      \advance\tempcount by 1
+  \repeat
+}
 
-\begin{table*}[!ht]
-    \centering
-    \caption{Detailed Analysis of Digital Technology Usage Across Educational Levels}
-    {\small
-    \begin{tabular}{@{}l*{8}{c}@{}}
-        \hline
-        \multirow{2}{*}{\textbf{Technology Type}} & \multicolumn{2}{c}{\textbf{Primary School}} & \multicolumn{2}{c}{\textbf{Secondary School}} & \multicolumn{2}{c}{\textbf{Higher Education}} & \multicolumn{2}{c}{\textbf{Overall}} \\
-        \cmidrule(lr){2-3} \cmidrule(lr){4-5} \cmidrule(lr){6-7} \cmidrule(lr){8-9}
-        & Digital & Traditional & Digital & Traditional & Digital & Traditional & Digital & Traditional \\
-        \hline
-        Interactive whiteboards & 82.4 & 25.3 & 76.8 & 22.1 & 75.7 & 21.9 & 78.3 & 23.1 \\
-        Tablet usage & 68.9 & 19.2 & 64.5 & 18.7 & 63.7 & 18.8 & 65.7 & 18.9 \\
-        Online learning platforms & 85.6 & 26.4 & 81.2 & 25.1 & 80.4 & 25.3 & 82.4 & 25.6 \\
-        Virtual reality tools & 73.8 & 21.5 & 70.1 & 19.8 & 69.7 & 19.6 & 71.2 & 20.3 \\
-        Collaborative software & 77.2 & 24.6 & 74.5 & 23.2 & 73.9 & 22.8 & 75.2 & 23.5 \\
-        Mobile learning apps & 79.1 & 26.8 & 76.3 & 25.4 & 75.8 & 24.9 & 77.1 & 25.7 \\
-        \hline
-    \end{tabular}
-    }
-    \figurenote{Data stratified by educational levels: Primary School (ages 5-11), Secondary School (ages 11-18), and Higher Education (ages 18+). All values represent percentages of institutions reporting regular usage. Digital = Technology-enhanced learning, Traditional = Conventional teaching methods. Primary Schools (n=83), Secondary Schools (n=89), Higher Education (n=78).}
-    \label{tab:detailed_symptoms}
-\end{table*}
+% % Helper command to create discipline stripes
+% \newcommand{\disciplinestripes}{%
+%   % Use the stored discipline count
+%   \newdimen\stripe@width
+%   \stripe@width=1cm
+%   \ifnum\value{cjhbdisciplinecount}>0
+%     \divide\stripe@width by \value{cjhbdisciplinecount}
+%   \fi
+  
+%   \makebox[0pt][l]{%
+%     \raisebox{-3cm}[0pt][0pt]{%
+%       % Draw the stripes for each defined discipline
+%       \ifnum\value{cjhbdisciplinecount}=0
+%         {\color{\disciplinecolor}\rule{\stripe@width}{4cm}}%
+%       \else
+%         \cjhb@drawallstripes{\stripe@width}%
+%       \fi
+%     }%
+%   }%
+% }
 
-\end{sectiontext}
+% Macro to draw stripes for all defined disciplines
+\newcommand{\cjhb@drawallstripes}[1]{%
+  \newcount\tempcount
+  \tempcount=1
+  \loop
+    \ifnum\tempcount>\value{cjhbdisciplinecount}
+    \else
+      {\expandafter\color{cjhbdisc\the\tempcount}\rule{#1}{4cm}}%
+      \advance\tempcount by 1
+  \repeat
+}
 
-\subsection{Digital Divide in Educational Access}
-\begin{sectiontext}
-\lipsum
+% Function to create sideways discipline text
+\newcommand{\sidewaysdisciplinetext}[1]{%
+  \rotatebox{#1}{%
+    \parbox{40cm}{%
+      \ifnum#1=-90
+        \begin{flushleft}
+      \else
+        \begin{flushright}
+      \fi
+      \disciplinefont\addfontfeature{LetterSpace=27}\fontsize{11}{13}\selectfont
+      \ifnum\value{cjhbdisciplinecount}=0
+        {\color{\disciplinecolor}\disciplinetext}%
+      \else
+        \cjhb@drawalldisciplinetext%
+      \fi
+      \ifnum#1=-90
+        \end{flushleft}
+      \else
+        \end{flushright}
+      \fi
+    }%
+  }%
+}
 
-\begin{table}[htbp]
-    \centering
-    \caption{Prevalence of Digital Technology Usage in Educational Institutions}
-    {\small
-    \begin{tabular}{@{}l@{\hspace{3pt}}c@{\hspace{3pt}}c@{\hspace{3pt}}c@{}}
-        \hline
-        \textbf{Technology} & \textbf{Digital (\%)} & \textbf{Traditional (\%)} & \textbf{p} \\
-        \hline
-        Interactive whiteboards & 78.3 & 23.1 & $<$.001 \\
-        Tablet usage & 65.7 & 18.9 & $<$.001 \\
-        Online platforms & 82.4 & 25.6 & $<$.001 \\
-        Virtual reality & 71.2 & 20.3 & $<$.001 \\
-        \hline
-    \end{tabular}
-    }
-    \figurenote{Data collected from a fictional sample of 250 digital-focused institutions and 250 traditional institutions. Digital = Technology-enhanced learning environments, Traditional = Conventional teaching methods. All measurements were taken using standardised educational assessment tools.}
-    \label{tab:shame_symptoms}
-\end{table}
+% Macro to draw all discipline names with their colors for sideways text
+\newcommand{\cjhb@drawalldisciplinetext}{%
+  \newcount\tempcount
+  \tempcount=1
+  \loop
+    \ifnum\tempcount>\value{cjhbdisciplinecount}
+    \else
+      \ifnum\tempcount>1\hspace{1em}\fi
+      {\expandafter\color{cjhbdisc\the\tempcount}\cjhb@getdisciplinename{\the\tempcount}}%
+      \advance\tempcount by 1
+  \repeat
+}
 
-\lipsum
+% Helper to get discipline name by number
+\newcommand{\cjhb@getdisciplinename}[1]{%
+  \csname cjhb@discname#1\endcsname
+}
 
-\begin{figure*}[!ht]
-    \centering
-    \caption{This is a sample caption for a full-width figure demonstrating the consistent styling across different figure environments.}
-    \includegraphics[width=\linewidth]{images/article_upper_logo.png}
-    \figurenote{Full-width figures use the same styling as single-column figures, maintaining visual consistency throughout.}
-    \label{fig:second}
-\end{figure*}
+% Main pagestripes command
+\newcommand{\pagestripes}[1]{%
+  \newdimen\stripe@width
+  \stripe@width=1cm
+  \ifnum\value{cjhbdisciplinecount}>0
+    \divide\stripe@width by \value{cjhbdisciplinecount}
+  \fi
+  
+  \begin{textblock*}{\stripe@width}(
+    \if#1l
+      0cm
+    \else
+      \ifnum\value{cjhbdisciplinecount}=1
+        \dimexpr\paperwidth-\stripe@width\relax
+      \else\ifnum\value{cjhbdisciplinecount}=2
+        \dimexpr\paperwidth-\stripe@width-.5cm\relax
+      \else\ifnum\value{cjhbdisciplinecount}=3
+        \dimexpr\paperwidth-\stripe@width-.7cm\relax
+      \else
+        \dimexpr\paperwidth-\stripe@width-.7cm\relax
+      \fi\fi\fi
+    \fi,
+    0pt
+  )
+    \ifnum\value{cjhbdisciplinecount}=0
+      {\color{\disciplinecolor}\rule{\stripe@width}{4cm}}%
+    \else
+      \cjhb@drawallstripes{\stripe@width}%
+    \fi
+  \end{textblock*}%
+  
+  \ifnum\value{page}>1
+    \begin{textblock*}{2cm}(
+      \if#1l
+        -0.05cm
+      \else
+        \dimexpr\paperwidth-1.9cm\relax
+      \fi,
+      4.5cm
+    )
+      \newcount\rot@angle
+      \if#1l
+        \rot@angle=-90
+      \else
+        \rot@angle=90
+      \fi
+      \sidewaysdisciplinetext{\the\rot@angle}%
+    \end{textblock*}%
+  \fi
+}
 
-\end{sectiontext}
+\ProcessOptions\relax
 
-\section{Methodology}
-\begin{sectiontext}
-\lipsum
+% ========== FIXED JOURNAL BANNER ==========
+\newcommand{\journalbanner}{%
+  \cjhb@buildbanner
+  \vspace*{-1.5cm}%
+  \noindent\hspace*{-1.5cm}%
+  \begin{minipage}{\dimexpr\textwidth+3cm\relax}%
+    \hspace{1.8cm}%
+    \begin{minipage}[t]{0.2\textwidth}
+      \vspace{-.5em}%
+      \hspace{-0.5cm}%
+      \includegraphics[width=1\linewidth]{images/article_upper_logo.png}
+    \end{minipage}%
+    \begin{minipage}[t]{0.645\textwidth}
+      \raggedleft 
+      \vspace{1.6em}
+      {\disciplinetext}
+    \end{minipage}
+  \end{minipage}
+  \vspace{1.5em}
+}
 
-\begin{quote}
-    The integration of digital technology in educational settings has fundamentally transformed the way students learn and teachers instruct. Research conducted across multiple institutions demonstrates that technology-enhanced learning environments consistently outperform traditional methods in terms of student engagement and academic achievement. The shift towards digital platforms has created new opportunities for personalised learning experiences while simultaneously presenting challenges related to accessibility and digital literacy. (Interview 6)
-\end{quote}
-\end{sectiontext}
+% ========== TITLE ==========
+\newcommand{\articletitle}[1]{%
+  
+  \begingroup
+    \vspace*{2em}%
+    \hyphenpenalty=10000
+    \exhyphenpenalty=10000
+    \fontsize{23}{27}\selectfont
+    \articletitlefont
+    \parbox{\textwidth}{\justifying \noindent #1}
+  \endgroup
+}
 
-\printnotes
+% ========== AUTHOR AND AFFILIATION SYSTEM ==========
+% Storage
+\newcounter{affn}
+\newcount\corraucount
+\corraucount=0
+
+% Author and affiliation lists
+\def\artauthors{}
+\def\auaddress{}
+
+% Cross-reference label handling
+\def\jmkLabel#1{\@bsphack\protected@write\@auxout{}{\string\Newlabel{#1}{\@currentlabel}}\@esphack}
+\def\Newlabel#1#2{\expandafter\xdef\csname X@#1\endcsname{#2}}
+\def\jmkRef#1{\@ifundefined{X@#1}{0}{\csname X@#1\endcsname}}
+
+% Email storage for corresponding authors
+\def\@email{}
+\def\@allemail{}
+\def\@correspondingemail{}
+
+\def\email#1{%
+  \gdef\@email{#1}%
+}
+
+\newcommand{\setcorrespondingemail}[1]{%
+  \gdef\@correspondingemail{#1}%
+}
+
+% Author command
+\let\sep\@empty
+\let\authorsep\@empty
+
+\def\author{\@ifstar\@@corrauthor\@@author}
+
+\newcommand{\@@author}[2][]{%
+  \def\@authfrstarg{#1}%
+  \g@addto@macro\artauthors{%
+    \def\baselinestretch{1}%
+    \authorsep{#2}\unskip\ifx\@authfrstarg\empty\else\textsuperscript{\smash{{%
+      \@for\@@affmark:=#1\do{\edef\affnum{\@ifundefined{X@\@@affmark}{\@@affmark}{\jmkRef{\@@affmark}}}%
+      \unskip\sep\affnum\let\sep=,}}}}\fi%
+    \def\authorsep{, }%
+    \global\let\sep\@empty%
+  }%
+}
+
+\newcommand{\@@corrauthor}[2][]{%
+  \def\@authfrstarg{#1}%
+  \advance\corraucount by 1%
+  \g@addto@macro\artauthors{%
+    \def\baselinestretch{1}%
+    \authorsep{#2}\unskip\ifx\@authfrstarg\empty\else\textsuperscript{\smash{{%
+      \@for\@@affmark:=#1\do{\edef\affnum{\@ifundefined{X@\@@affmark}{\@@affmark}{\jmkRef{\@@affmark}}}%
+      \unskip\sep\affnum\let\sep=,}}}}\fi%
+    \textsuperscript{*}%
+    \def\authorsep{, }%
+    \global\let\sep\@empty%
+  }%
+}
+
+% Affiliation command
+\newcommand{\affil}[2][]{%
+  \g@addto@macro\auaddress{%
+    \stepcounter{affn}%
+    \xdef\@currentlabel{\theaffn}%
+    \jmkLabel{\theaffn}%
+    {\authorfont\fontsize{9}{12}\selectfont\textsuperscript{#1}#2\par}%
+  }%
+}
+
+% Author name components
+\newcommand{\fnm}[1]{\leavevmode\hbox{#1}}
+\newcommand{\sur}[1]{\unskip~\leavevmode\hbox{#1}}
+\newcommand{\orcidlink}[1]{\mbox{\href{https://orcid.org/#1}{\includegraphics[height=1em]{images/orcid.png}}\hspace{0.5em}}}
+
+% Affiliation components
+\newcommand{\orgdiv}[1]{#1}
+\newcommand{\orgname}[1]{#1}
+\newcommand{\country}[1]{#1}
+
+% Author block
+\newcommand{\neauthorblock}{%
+  \vspace{2em}
+  \noindent
+  \begin{minipage}[t]{\textwidth}
+    \begin{minipage}[t]{0.5\textwidth}
+      \raggedright
+      {\authorfont\fontsize{11}{12}\selectfont \artauthors\@allemail}
+    \end{minipage}%
+    \hfill
+    \begin{minipage}[t]{0.5\textwidth}
+      \raggedleft
+      \copyrightstatement{\cjhb@getfirstauthorname}
+    \end{minipage}
+  \end{minipage}
+  
+  \vspace{1.5em}
+  
+  \noindent
+  \begin{minipage}{\textwidth}
+    \raggedright
+    {\authorfont\fontsize{9}{12}\selectfont \auaddress}
+    \ifx\@correspondingemail\empty\else
+      \vspace{0.5em}
+      {\authorfont\fontsize{7}{12}\selectfont *\textit{\@correspondingemail}}
+    \fi
+  \end{minipage}
+  \vspace{.2em}
+}
+
+% Helper to get first author surname for copyright
+\newcommand{\cjhb@getfirstauthorname}{%
+  \article@copyrightname
+}
+
+% Command to set author heading and copyright text
+\def\article@authorheading{}
+\def\article@copyrightname{}
+\newcommand{\setauthorheadingandcopyright}[2][]{%
+  \def\article@authorheading{#2}%
+  \def\article@copyrightname{\ifx\\#1\\#2\else#1\fi}%
+}
+
+% Command to format authors for header
+\newcommand{\cjhb@formatauthorsforheader}{%
+  \article@authorheading
+}
+
+% Copyright statement with image
+\newcommand{\copyrightstatement}[1]{%
+  \vspace{-.5em}
+  \hbox{%
+    \includegraphics[height=1em]{images/copyright.png}%
+    \hspace{.3em}
+    \raisebox{.6em}[0pt][0pt]{%
+      \parbox[t]{\dimexpr0.8\textwidth\relax}{%
+        \raggedright
+        \authorfont\fontsize{6}{6}\selectfont
+        \linespread{0.8}\selectfont
+        \setlength{\parskip}{0pt}%
+        \setlength{\baselineskip}{6pt}%
+        \textcopyright\,#1. \textit{This is an Open Access article distributed under the terms of the \href{https://creativecommons.org/licenses/by-nc/4.0/}{Creative Commons Attribution-NonCommercial 4.0 License}}.%
+      }%
+    }%
+  }%
+}
+
+% ========== REVIEW / META ==========
+\newcommand{\reviewdates}[3]{%
+  \authorfont\fontsize{9}{12}\selectfont
+  \textbf{Received} #1\\
+  \ifx\relax#2\relax
+    \global\let\@seconddate\relax
+  \else
+    \global\def\@seconddate{#2}%
+    \textbf{Revision received} #2\\%
+  \fi
+  \textbf{Accepted} #3%
+}
+
+\newcommand{\keywords}[1]{\authorfont\fontsize{9}{12}\selectfont\textbf{Keywords:} #1}
+\newcommand{\doi}[1]{\authorfont\fontsize{9}{12}\selectfont\textbf{DOI:} \href{#1}{#1}}
+
+% Create environments for the metadata and abstract block
+\newenvironment{metablock}{%
+  \hrule height 0.5pt
+  \vspace{1em}
+  \noindent
+  \authorfont\fontsize{9}{12}\selectfont
+  \begin{tabular}[t]{@{}p{0.3\textwidth}@{\hspace{0.05\textwidth}}p{0.65\textwidth}@{}}
+}{%
+  \end{tabular}
+  \vspace{1em}
+  \hrule height 0.5pt
+  \vspace{-1em}
+}
+
+% Define the abstract environment to be used within metablock
+\newcommand{\@seconddate}{}
+\newenvironment{articleabstract}{%
+  &
+  \ifx\@seconddate\relax
+    \vspace{-11em}%
+  \else
+    \vspace{-13em}%
+  \fi
+  \setlength{\parskip}{0.8em}%
+  \setlength{\baselineskip}{12pt}%
+}{}
+
+% ========== BODY TEXT FORMATTING ==========
+% Store article metadata
+\def\article@title{}
+\def\article@shorttitle{}
+
+% Setters for article metadata
+\newcommand{\setarticletitle}[1]{\def\article@title{#1}}
+\newcommand{\setarticleshorttitle}[1]{\def\article@shorttitle{#1}}
+\newcommand{\setarticledates}[1]{\def\article@dates{#1}}
+\newcommand{\setarticlekeywords}[1]{\def\article@keywords{#1}}
+\newcommand{\setarticledoi}[1]{\def\article@doi{#1}}
+\newcommand{\setarticleabstract}[1]{\def\article@abstract{#1}}
+
+% Command to start the main body
+\newcommand{\startarticlebody}{%
+  \twocolumn[{%
+    \begin{@twocolumnfalse}
+      \journalbanner
+      \articletitle{\article@title}
+      \par\vspace{.1em}%
+      \neauthorblock
+      \begin{metablock}
+        \article@dates\\[1em]%
+        \article@keywords\\[1em]%
+        \article@doi%
+        \begin{articleabstract}
+          \article@abstract
+        \end{articleabstract}
+      \end{metablock}
+      \vspace{2em}%
+    \end{@twocolumnfalse}
+  }]%
+  \fontsize{9}{11}\selectfont%
+  \setlength{\columnsep}{0.5cm}%
+  \setlength{\parindent}{1em}%
+  \setlength{\parskip}{0pt}%
+}
+
+% Custom section counter to track first paragraphs
+\newcounter{firstpara}
+\newcommand{\resetfirstpara}{\setcounter{firstpara}{1}}
+\newcommand{\notfirstpara}{\setcounter{firstpara}{0}}
+
+% Environment for sections that handles first paragraph indentation
+\newenvironment{sectiontext}{%
+  \resetfirstpara
+}{%
+  \notfirstpara
+}
+
+% Redefine paragraph to handle indentation
+\let\oldpar\par
+\DeclareRobustCommand{\par}{%
+  \ifnum\value{firstpara}=1
+    \setlength{\parindent}{0pt}%
+    \notfirstpara
+  \else
+    \setlength{\parindent}{1em}%
+  \fi
+  \oldpar
+}
+
+% ========== SECTION FORMATTING ==========
+% Variables for customising section appearance
+\newcommand{\sectionfontsize}{12pt}
+\newcommand{\subsectionfontsize}{10pt}
+\newcommand{\sectionspacebefore}{1.5em}
+\newcommand{\sectionspaceafter}{0pt}
+\newcommand{\subsectionspacebefore}{1.2em}
+\newcommand{\subsectionspaceafter}{0pt}
+
+% Commands to customise section appearance
+\newcommand{\setsectionfontsize}[1]{\renewcommand{\sectionfontsize}{#1}}
+\newcommand{\setsubsectionfontsize}[1]{\renewcommand{\subsectionfontsize}{#1}}
+\newcommand{\setsectionspacing}[2]{%
+  \renewcommand{\sectionspacebefore}{#1}%
+  \renewcommand{\sectionspaceafter}{#2}%
+}
+\newcommand{\setsubsectionspacing}[2]{%
+  \renewcommand{\subsectionspacebefore}{#1}%
+  \renewcommand{\subsectionspaceafter}{#2}%
+}
+
+% Section formatting
+\titleformat{\section}
+  {\articletitlefont\color{\disciplinecolor}\fontsize{\sectionfontsize}{14pt}\selectfont\bfseries\uppercase}
+  {}
+  {0pt}
+  {}
+  []  
+
+\titlespacing*{\section}
+  {0pt} 
+  {\sectionspacebefore} 
+  {0pt}  
+
+% Subsection formatting
+\titleformat{\subsection}
+  {\articletitlefont\color{black}\fontsize{\subsectionfontsize}{12pt}\selectfont}
+  {}
+  {0pt}
+  {}
+  []  
+
+\titlespacing*{\subsection}
+  {0pt}  
+  {\subsectionspacebefore}  
+  {0pt}  
+
+% Subsubsection formatting
+\titleformat{\subsubsection}
+  {\articletitlefont\color{black}\fontsize{\subsectionfontsize}{12pt}\selectfont\itshape}
+  {}
+  {0pt}
+  {}
+  []  
+
+\titlespacing*{\subsubsection}
+  {0pt}
+  {\subsectionspacebefore}
+  {0pt}
+
+% ========== FIGURE AND FLOAT FORMATTING ==========
+% Define new command for notes under floats
+\newcommand{\figurenote}[1]{%
+  \begin{minipage}{\linewidth}
+    \vspace{.3em}
+    \RaggedRight
+    \linespread{0.85}\selectfont
+    {\authorfont\fontsize{8}{9}\selectfont\itshape\textbf{Note.} #1\par}%
+  \end{minipage}%
+  \vspace{-1em}%
+}
+
+% Customize caption format for all float types
+\DeclareCaptionFormat{cjhbfloat}{%
+  {\authorfont\fontsize{9}{11}\selectfont\textbf{#1} | }\,%
+  {\authorfont\fontsize{9}{11}\selectfont\itshape #3}%
+}
+
+% Set up the base style for figures
+\captionsetup[figure]{
+  format=cjhbfloat,
+  justification=raggedright,
+  singlelinecheck=true,
+  labelsep=none,
+  textfont=it,
+  position=top,
+  textformat=simple
+}
+
+% Make figure* use exactly the same format as figure
+\captionsetup[figure*]{
+  format=cjhbfloat,
+  justification=raggedright,
+  singlelinecheck=true,
+  labelsep=none,
+  textfont=it,
+  position=top,
+  textformat=simple
+}
+
+% Apply same settings to tables
+\captionsetup[table]{format=cjhbfloat}
+\captionsetup[table*]{format=cjhbfloat}
+\captionsetup[subfigure]{format=cjhbfloat}
+\captionsetup[subtable]{format=cjhbfloat}
+
+% Set table text to use Helvetica Light font
+\renewcommand{\arraystretch}{1.2}
+\renewcommand{\tabcolsep}{6pt}
+
+% Customize table environment to use Helvetica Light
+\let\oldtabular\tabular
+\renewcommand{\tabular}{\authorfont\fontsize{8}{8}\oldtabular}
+
+% Ensure equation numbers follow similar style
+\renewcommand{\theequation}{%
+  {\authorfont\fontsize{9}{11}\selectfont\arabic{equation}}%
+}
+
+% ========== PAGE FOOTER ==========
+\pagestyle{fancy}
+\fancyhf{}
+
+% Set up the TPGrid for absolute positioning
+\setlength{\TPHorizModule}{1mm}
+\setlength{\TPVertModule}{1mm}
+\textblockorigin{0mm}{0mm}
+
+% Headers for all pages
+\fancyhead[L]{%
+  \ifnum\value{page}>1
+    {\authorfont\fontsize{8}{10}\selectfont\makebox[\dimexpr0.45\textwidth][l]{\cjhb@formatauthorsforheader}}%
+  \fi
+  \ifodd\value{page}
+    \hbox to 0pt{\pagestripes{l}\hss}%
+  \fi
+}
+\fancyhead[R]{%
+  \ifnum\value{page}>1
+    {\authorfont\fontsize{8}{10}\selectfont\makebox[\dimexpr0.45\textwidth][r]{\article@shorttitle}}%
+  \fi
+  \ifodd\value{page}\else
+    \hbox to 0pt{\pagestripes{r}\hss}%
+  \fi
+}
+
+% Footers for all pages
+\fancyfoot[L]{\authorfont\fontsize{7}{9}\selectfont\itshape Cambridge Journal of Human Behaviour}
+\fancyfoot[C]{\authorfont\fontsize{7}{9}\selectfont\bfseries\thepage}
+\fancyfoot[R]{\authorfont\fontsize{7}{9}\selectfont\itshape Volume \journalvolume\upshape\ | Issue \journalissue}
+
+% Conditional header rule
+\renewcommand{\headrule}{%
+  \ifnum\value{page}>1
+    \hrule width\headwidth height0.5pt \vskip-0.5pt
+  \fi
+}
+
+\renewcommand{\footrulewidth}{.5pt}
+
+% Plain style for first page
+\fancypagestyle{plain}{%
+  \fancyhf{}
+  \fancyhead[L]{\ifodd\value{page}\hbox to 0pt{\pagestripes{l}\hss}\fi}
+  \fancyhead[R]{\ifodd\value{page}\else\hbox to 0pt{\pagestripes{r}\hss}\fi}
+  \fancyfoot[L]{\authorfont\fontsize{7}{9}\selectfont\itshape Cambridge Journal of Human Behaviour}
+  \fancyfoot[C]{\authorfont\fontsize{7}{9}\selectfont\bfseries\thepage}
+  \fancyfoot[R]{\authorfont\fontsize{7}{9}\selectfont\itshape Volume \journalvolume\upshape\ | Issue \journalissue}
+  \renewcommand{\headrulewidth}{0pt}
+  \renewcommand{\footrulewidth}{.5pt}
+}
+
+% ========== PARAGRAPH ==========
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.8em}
+
+% ========== QUOTE ENVIRONMENT ==========
+\renewenvironment{quote}{%
+  \list{}{%
+    \rightmargin0pt%
+    \leftmargin3em%
+  }%
+  \item\relax\justifying%
+}{%
+  \endlist
+}
+
+% ========== FOOTNOTE HANDLING ==========
+% Redefine footnote to use endnotes
+\let\footnote\endnote
+
+% Remove the default endnotes title
+\renewcommand{\notesname}{}
+
+% Custom formatting for the Notes section
+\newcommand{\printnotes}{%
+  \ifnum\value{endnote}>0%
+    \section*{Notes}%
+    \vspace{-1.5em}%
+    \begingroup
+      \parindent 0pt%
+      \parskip 0.3em%
+      \theendnotes%
+    \endgroup
+  \fi
+}
+
+% Customise note numbers to be superscript in both text and Notes section
+\renewcommand\makeenmark{\textsuperscript{\theenmark}}
+
+% Make endnote numbers in text superscripted
+\renewcommand\@makeenmark{\textsuperscript{\theenmark}}
+
+% Remove the period after note numbers in the Notes section and any heading
+\renewcommand\enoteformat{%
+  \noindent%
+  \theenmark\hspace{0.5em}%
+}
 
 % ========== INTERDISCIPLINARY COMMENTARIES ==========
-\startcommentaries
+% Commands for creating interdisciplinary commentaries
+\newcommand{\commentarydiscipline}[2]{%
+  \definecolor{commentarytempcolor}{RGB}{#1}%
+  \vspace{1em}%
+  \noindent\hfill%
+  {\disciplinefont\fontsize{10}{12}\selectfont\bfseries\addfontfeature{LetterSpace=27}\color{commentarytempcolor}#2}%
+  \par\noindent\hfill%
+  {\color{commentarytempcolor}\rule{0.4\textwidth}{3pt}}%
+  \par\vspace{2em}%
+}
 
-% First Commentary
-\commentarydiscipline{132,75,158}{PSYCHOLOGY}
-\commentarytitle{The Role of Cognitive Processing in Technology-Enhanced Learning}
-\commentaryauthor{Dr. Emily Rodriguez}
-\commentaryaffiliation{Department of Educational Psychology, University of Cambridge, UK}
-\commentaryabstract{This commentary examines the cognitive mechanisms underlying digital learning processes, highlighting the importance of metacognitive awareness in technology-enhanced educational interventions. The discussion focuses on how cognitive restructuring techniques can be integrated with existing digital learning approaches to address learning barriers more effectively.}
+\newcommand{\commentarytitle}[1]{%
+  \noindent%
+  {\articletitlefont\fontsize{12}{16}\selectfont\bfseries #1}%
+  \par\vspace{1.5em}%
+}
 
-\begin{commentarycontent}
+\newcommand{\commentaryauthor}[1]{%
+  \noindent%
+  {\authorfont\fontsize{10}{11}\selectfont #1}%
+  \par\vspace{0.1em}%
+}
 
-% DO NOT USE \section{}, just use subsection and subsubsection
-\subsection{Cognitive Mechanisms of Digital Learning}
-Recent research has demonstrated the importance of cognitive processing in technology-enhanced learning environments \parencite{rodriguez2023cognitive}. \lipsum[1]
+\newcommand{\commentaryaffiliation}[1]{%
+  \noindent%
+  {\authorfont\fontsize{8}{10}\selectfont #1}%
+  \par\vspace{1.5em}%
+  \noindent\hrule height 1pt%
+  \par\vspace{1em}%
+}
 
-\subsection{Educational Implications}
-Metacognitive awareness plays a crucial role in digital learning interventions \parencite{patel2023metacognitive}. \lipsum[1]
+\newcommand{\commentaryabstract}[1]{%
+  \noindent%
+  {\authorfont\fontsize{9}{11}\selectfont #1}%
+  \par\vspace{1em}%
+  \noindent\hrule height 1pt%
+  \par\vspace{1em}%
+}
 
-\subsection{Future Research Directions}
-\lipsum[1]
-\end{commentarycontent}
+% Environment for commentary content that uses subsection formatting
+\newenvironment{commentarycontent}{%
+  \begin{sectiontext}%
+}{%
+  \end{sectiontext}%
+  \vspace{2em}%
+}
 
-% Second Commentary
-\commentarydiscipline{252,194,115}{SOCIAL ANTHROPOLOGY}
-\commentarytitle{Cultural Perspectives on Digital Technology in Education: A Cross-Cultural Analysis}
-\commentaryauthor{Prof. Michael Chen}
-\commentaryaffiliation{Department of Social Anthropology, University of Oxford, UK}
-\commentaryabstract{This commentary explores how cultural contexts shape the adoption and implementation of digital technology in educational settings. Drawing on cross-cultural research, it examines how different societies conceptualise technology-enhanced learning and its relationship to educational outcomes, offering insights for culturally sensitive digital integration approaches.}
-\begin{commentarycontent}
-\subsection{Cultural Constructions of Digital Learning}
-Cultural perspectives on educational technology vary significantly across societies \parencite{chen2022cultural}. \lipsum[1]
+% Command to start the commentaries section
+\newcommand{\startcommentaries}{%
+  \vspace{4em}%
+  \noindent\hrule height 3pt width\columnwidth%
+  \vspace{2em}%
+  \noindent{\articletitlefont\fontsize{17}{18}\selectfont Interdisciplinary Commentaries}%
+  \par\vspace{2em}%
+}
 
-\subsection{Cross-Cultural Digital Integration}
-Cross-cultural approaches to technology-enhanced learning have shown promising results \parencite{smith2023crosscultural}. \lipsum[1]
+% ========== BIBLIOGRAPHY FORMATTING ==========
+\renewcommand*{\bibfont}{\authorfont\fontsize{7}{9}\selectfont}
 
-\subsection{Implications for Global Education}
-\lipsum[1]
-\end{commentarycontent}
+\setlength{\bibhang}{0.5em}
+\setlength{\bibitemsep}{0.2em}
 
-% Print references
-% Call these commands individually as needed:
-\printarticlereferences                    % Always include article references (article references file must be called references.bib)
-\printcommentaryreferences                 % Include if you have commentaries (commentaries references [aggregated across all commentaries] file must be called commentaryreferences.bib
+\DefineBibliographyStrings{english}{%
+  references = {Article references}%
+}
 
-\end{document}
+\DeclareSourcemap{
+  \maps[datatype=bibtex]{
+    \map{
+      \perdatasource{references/references.bib}
+      \step[fieldset=keywords, fieldvalue={cjhbarticleref}, append]
+    }
+    \map{
+      \perdatasource{references/commentaryreferences.bib}
+      \step[fieldset=keywords, fieldvalue={cjhbcommentaryref}, append]
+    }
+  }
+}
+
+% Command to print article references
+\newcommand{\printarticlereferences}{%
+  \clearpage
+  \onecolumn
+  \noindent{\authorfont\color{black}\fontsize{20pt}{14pt}\selectfont Article references}\par
+  \vspace{.5em}%
+  \begin{multicols}{3}
+  \printbibliography[heading=none, keyword=cjhbarticleref]
+  \end{multicols}%
+}
+
+% Command to load commentary references
+\newcommand{\loadcommentaryreferences}{%
+  \addbibresource{references/commentaryreferences.bib}%
+}
+
+% Command to print commentary references
+\newcommand{\printcommentaryreferences}{%
+  \vspace{2em}%
+  \noindent\hrule height 1pt width\textwidth%
+  \vspace{2em}%
+  \noindent{\authorfont\color{black}\fontsize{20pt}{14pt}\selectfont Commentary references}\par
+  \vspace{.5em}%
+  \begin{multicols}{3}
+  \printbibliography[heading=none, keyword=cjhbcommentaryref]
+  \end{multicols}%
+}
