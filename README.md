@@ -2,6 +2,8 @@
 
 A comprehensive LaTeX style package for the Cambridge Journal of Human Behaviour, designed to produce professionally formatted academic articles with support for interdisciplinary commentaries and flexible discipline-based theming.
 
+![Example Page](images/example_page.png)
+
 ## Overview
 
 This package provides a complete LaTeX environment for academic publishing with the following key features:
