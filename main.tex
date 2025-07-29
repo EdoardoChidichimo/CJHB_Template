@@ -3,7 +3,7 @@
 \usepackage{lipsum} % you can delete this.
 
 % Add bibliography files
-\addbibresource{references.bib} % Article references should be uploaded exactly as "references.bib"
+\addbibresource{references/references.bib} % Article references should be uploaded exactly as "references.bib"
 \loadcommentaryreferences  % Load commentary references if you have commentaries
 
 \setjournalvolume{3}  % Set the journal volume number
@@ -14,11 +14,12 @@
 % Define disciplines (name, RGB values)
 \definediscipline{SCIENCE \& TECHNOLOGY STUDIES}{199,21,133} % The section titles will automatically turn this colour (check below to override this)
 \definediscipline{HARRISON PRIZE}{0,0,0}
-% \definediscipline{THIRD DISCIPLINE}{0,0,158}
+% \definediscipline{SUE BENSON PRIZE}{0,0,158}
 
 % Optional: Set section title colour (automatically picks first discipline defined but this can override)
 % \setsectiontitlecolour{252,194,115}
 
+% Set article metadata
 \setarticletitle{The Role of Digital Technology in Modern Educational Practices: A Comprehensive Review}
 \setarticleshorttitle{Digital Technology in Education}  % Set the short title for headers
 \setauthorheadingandcopyright{Thompson et al.}
@@ -37,12 +38,10 @@
 
 \setcorrespondingemail{e.thompson@oxford.ac.uk}
 
-\setarticledates{\reviewdates{January 2, 2024}{June 2, 2025}{June 10, 2025}} % {received}{revision}{accepted} you can leave the revision empty if not necessary. 
+\setarticledates{\reviewdates{January 2, 2024}{June 2, 2025}{June 2, 2025}} % {received}{revision}{accepted} you can leave the revision empty if not necessary. 
 
 \setarticlekeywords{\keywords{digital technology, educational practices, online learning, blended learning}}
-
 \setarticledoi{\doi{https://doi.org/10.60886/CAM.251}}
-
 \setarticleabstract{Despite significant advancements in digital technology integration within educational settings\footnote{Digital technology in education refers to the use of electronic devices and software to enhance teaching and learning processes.}, many educational institutions continue to face challenges in effectively implementing these technological solutions. Recognising the digital divide as a critical barrier to educational equity is an essential part of resolving this gap between technological availability and effective implementation. This review analyses empirical evidence linking digital technology to educational outcomes. Specifically, it focuses on the enhanced learning experiences and academic performance following the integration of digital tools, particularly in cases involving blended learning environments. A substantial body of research illustrates the significant influence that digital technology has on student engagement and learning outcomes \parencite{andrews2000digital, beck2011whiteboards, lopez2019impact, badour2017literacy}. Numerous approaches to digital integration have been explored \parencite{smith2020intervention, davis2021guidelines}, but a comprehensive and integrated model for technology-enhanced learning is yet to be established. This review underscores the necessity for targeted research to develop and implement effective digital strategies. Ultimately, addressing technological barriers within education could enhance learning outcomes, reduce achievement gaps, and improve overall student success \parencite{chen2022meta, rodriguez2023transformation}.}
 
 \startarticlebody
@@ -53,7 +52,7 @@ Here is some text with a footnote\footnote{This is a test footnote in the introd
 
 \begin{figure}
     \caption{This is a sample caption for the first figure showing the new styling.}
-    \includegraphics[width=\linewidth]{article_upper_logo.png}
+    \includegraphics[width=\linewidth]{images/article_upper_logo.png}
     \figurenote{This is a sample note explaining additional details about the figure. The note can span multiple lines and will maintain proper formatting throughout.}
     \label{fig:first}
 \end{figure}
@@ -111,7 +110,7 @@ Here is some text with a footnote\footnote{This is a test footnote in the introd
 \begin{figure*}[!ht]
     \centering
     \caption{This is a sample caption for a full-width figure demonstrating the consistent styling across different figure environments.}
-    \includegraphics[width=\linewidth]{article_upper_logo.png}
+    \includegraphics[width=\linewidth]{images/article_upper_logo.png}
     \figurenote{Full-width figures use the same styling as single-column figures, maintaining visual consistency throughout.}
     \label{fig:second}
 \end{figure*}
