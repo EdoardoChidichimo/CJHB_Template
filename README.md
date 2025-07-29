@@ -1,6 +1,6 @@
 # Cambridge Journal of Human Behaviour LaTeX Style Package
 
-A comprehensive LaTeX style package for the Cambridge Journal of Human Behaviour, designed to produce professionally formatted academic articles with support for interdisciplinary commentaries and flexible discipline-based theming.
+A comprehensive LaTeX style package for the _Cambridge Journal of Human Behaviour_, designed to produce professionally formatted academic articles with support for interdisciplinary commentaries and flexible discipline-based theming.
 
 ![Example Page](images/example_page.png)
 
